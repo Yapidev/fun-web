@@ -44,9 +44,17 @@ export default function FloatingPhoto({
   return (
     <div
       ref={imgRef}
-      className={`absolute opacity-30 pointer-events-none select-none ${className}`}
+      className={`absolute ${className} transition-transform duration-300 ease-in-out`}
     >
-      <Image src={src} alt="" width={200} height={200} className="w-full h-auto" />
+      <div className="relative w-full h-full bg-white p-2 rounded-lg shadow-lg border-4 border-white">
+        <Image
+          src={src}
+          alt="floating"
+          width={200}
+          height={200}
+          className="object-cover rounded"
+        />
+      </div>
     </div>
   );
 }
