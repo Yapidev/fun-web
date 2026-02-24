@@ -1,4 +1,4 @@
-"use client" // karena kita pakai state dan event
+"use client" 
 
 import { useState } from "react"
 import Image from "next/image"
@@ -11,11 +11,9 @@ const photos = [
   { src: "/album-2.jpeg", caption: "Barrel setelah sekian lama" },
   { src: "/album-3.jpeg", caption: "Gatau dimana" },
   { src: "/album-4.jpeg", caption: "Beli kopi date" },
-  // Tambahkan foto lainnya sesuai kebutuhan
 ]
 
-// GANTI DENGAN TANGGAL JADIAN KAMU (format YYYY-MM-DD)
-const ANNIVERSARY_DATE = "2023-01-01"
+const ANNIVERSARY_DATE = "2022-12-31"
 
 export default function Home() {
   const [isUnlocked, setIsUnlocked] = useState(false)
