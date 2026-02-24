@@ -1,9 +1,11 @@
-"use client" 
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import { FaHeart } from "react-icons/fa"
-import FloatingPhoto from "@/app/components/FloatingPhoto"
+import { useState } from "react";
+import Image from "next/image";
+import { FaHeart } from "react-icons/fa";
+import FloatingPhoto from "@/app/components/FloatingPhoto";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 
 // Data foto untuk album
 const photos = [
@@ -11,24 +13,37 @@ const photos = [
   { src: "/album-2.jpeg", caption: "Barrel setelah sekian lama" },
   { src: "/album-3.jpeg", caption: "Gatau dimana" },
   { src: "/album-4.jpeg", caption: "Beli kopi date" },
-]
+  // Tambahkan foto lainnya sesuai kebutuhan
+];
 
-const ANNIVERSARY_DATE = "2022-12-31"
+// GANTI DENGAN TANGGAL JADIAN KAMU (format YYYY-MM-DD)
+const ANNIVERSARY_DATE = "2022-12-31";
 
 export default function Home() {
-  const [isUnlocked, setIsUnlocked] = useState(false)
-  const [inputDate, setInputDate] = useState("")
-  const [error, setError] = useState("")
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [inputDate, setInputDate] = useState("");
+  const [error, setError] = useState("");
+
+  // State untuk lightbox
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (inputDate === ANNIVERSARY_DATE) {
-      setIsUnlocked(true)
-      setError("")
+      setIsUnlocked(true);
+      setError("");
     } else {
-      setError("Tanggal jadian salah, coba lagi 😢")
+      setError("Tanggal jadian salah, coba lagi 😢");
     }
-  }
+  };
+
+  // Siapkan slides untuk lightbox
+  const slides = photos.map(photo => ({
+    src: photo.src,
+    alt: photo.caption,
+    title: photo.caption,
+  }));
 
   if (!isUnlocked) {
     return (
@@ -36,9 +51,7 @@ export default function Home() {
         <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 max-w-md w-full border border-pink-200">
           <div className="text-center mb-6">
             <FaHeart className="text-6xl text-pink-400 mx-auto animate-pulse" />
-            <h1 className="text-3xl font-bold text-pink-600 mt-4">
-              Untuk Febriana
-            </h1>
+            <h1 className="text-3xl font-bold text-pink-600 mt-4">Untuk Febriana</h1>
             <p className="text-gray-600 mt-2">Masukkan tanggal jadian kita</p>
           </div>
 
@@ -50,12 +63,11 @@ export default function Home() {
               className="w-full px-4 py-3 border border-pink-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/50"
               required
             />
-            {error && (
-              <p className="text-red-500 text-sm text-center">{error}</p>
-            )}
+            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
             <button
               type="submit"
-              className="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 rounded-xl transition shadow-md">
+              className="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 rounded-xl transition shadow-md"
+            >
               Buka Surat Cinta 💌
             </button>
           </form>
@@ -65,7 +77,7 @@ export default function Home() {
           </p>
         </div>
       </div>
-    )
+    );
   }
 
   // KONTEN UTAMA (SETELAH UNLOCK)
@@ -122,7 +134,12 @@ export default function Home() {
             {photos.map((photo, index) => (
               <div
                 key={index}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden transform transition hover:scale-105 hover:shadow-2xl">
+                onClick={() => {
+                  setLightboxIndex(index);
+                  setLightboxOpen(true);
+                }}
+                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden transform transition hover:scale-105 hover:shadow-2xl cursor-pointer"
+              >
                 <div className="relative w-full h-64">
                   <Image
                     src={photo.src}
@@ -151,11 +168,11 @@ export default function Home() {
               </p>
               <p className="mt-4 text-gray-700 text-justify">
                 Di hari spesialmu ini, aku cuma pengen kamu tau betapa
-                berartinya kamu di hidupku. Setiap senyuman, tawa, dan momen
-                bersamamu adalah hadiah terindah. Terima kasih telah menjadi
-                dirimu sendiri dan mengisi hariku dengan cinta. Semoga tahun ini
-                membawa seribu kebahagiaan untukmu. Aku mencintaimu, sekarang
-                dan selamanya. ❤️
+                berartinya kamu di hidupku. Setiap senyuman, tawa, dan
+                momen bersamamu adalah hadiah terindah. Terima kasih telah
+                menjadi dirimu sendiri dan mengisi hariku dengan cinta. Semoga
+                tahun ini membawa seribu kebahagiaan untukmu. Aku mencintaimu,
+                sekarang dan selamanya. ❤️
               </p>
               <p className="mt-6 text-right text-gray-800 font-semibold">
                 Dari seseorang yang selalu mencintaimu,
@@ -166,6 +183,15 @@ export default function Home() {
           </div>
         </section>
       </div>
+
+      {/* Lightbox Component */}
+      <Lightbox
+        open={lightboxOpen}
+        close={() => setLightboxOpen(false)}
+        slides={slides}
+        index={lightboxIndex}
+        styles={{ container: { backgroundColor: "rgba(0, 0, 0, 0.9)" } }}
+      />
     </main>
-  )
+  );
 }
